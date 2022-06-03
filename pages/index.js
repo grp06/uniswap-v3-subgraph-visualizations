@@ -1,9 +1,12 @@
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+
 const RootComponent = () => {
-  return (
-    <div>
-      <div>root component here</div>
-    </div>
-  )
+  const router = useRouter()
+  useEffect(() => {
+    router.push('/pools')
+  })
+  return <div></div>
 }
 
 export default RootComponent

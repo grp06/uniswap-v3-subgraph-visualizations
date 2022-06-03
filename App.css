@@ -1,0 +1,70 @@
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+.table {
+  table-layout: auto;
+}
+
+th {
+  width: 15%;
+  font-weight: 300;
+}
+
+nav li {
+  cursor: pointer;
+}
+ul {
+  list-style: none;
+}
+
+th i {
+  cursor: pointer;
+}
+
+/* using !important to override bootstrap striped tables */
+.red-text {
+  color: #e15241 !important;
+  font-weight: bold;
+}
+
+.green-text {
+  color: #4eaf0a !important;
+  font-weight: bold;
+}
+.bold {
+  font-weight: 900;
+}
+.token-heading {
+  width: 20%;
+}
+.price-heading {
+  width: 10%;
+}
+.price-change-heading {
+  width: 10%;
+}
+
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+}
+
+.loading-container {
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  opacity: 0.5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+}
+
+.nav-pills {
+  margin-top: 15px;
+}
+.nav-pills li {
+  margin: 0 15px;
+}

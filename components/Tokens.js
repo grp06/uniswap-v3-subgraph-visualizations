@@ -1,45 +1,49 @@
 import { useLazyQuery } from '@apollo/client'
-import FETCH_POOLS from '../gql/fetchPools'
+import FETCH_TOKENS from '../gql/fetchTokens'
 import { useState, useEffect, useContext, useCallback } from 'react'
-import { getTableHeader, numberWithCommas } from '../utils'
+import {
+  getTableHeader,
+  numberWithCommas,
+  getPrice,
+  getPriceChange,
+  oneDayAgo,
+} from '../utils'
 import { AppContext } from '../pages/_app'
 import Loading from './Loading'
 
-const Pools = () => {
+const Tokens = () => {
   const { setAppLoading, appLoading } = useContext(AppContext)
   const [orderBy, setOrderBy] = useState('totalValueLockedUSD')
   const [orderDirection, setOrderDirection] = useState('desc')
-  const [fetchPools, { error }] = useLazyQuery(FETCH_POOLS)
+  const [fetchTokens, { error }] = useLazyQuery(FETCH_TOKENS)
   const [page, setPage] = useState(1)
-  const [poolData, setPoolData] = useState(null)
+  const [tokenData, setTokenData] = useState(null)
 
-  const fetchPoolsAsync = useCallback(
+  const fetchTokensAsync = useCallback(
     async (nextPage, refetching) => {
       setAppLoading(true)
-      // if we're calling this function when clicking "next page" skip 15 results * current page
-      // otherwise, we're calling it when the page loads
       const skip = nextPage ? (nextPage - 1) * 15 : 0
-      const res = await fetchPools({
+      const res = await fetchTokens({
         fetchPolicy: refetching ? 'network-only' : 'cache-first',
         variables: {
           orderBy,
           orderDirection,
           skip,
+          dateFilter: oneDayAgo,
         },
       })
       setPage(nextPage || 1)
-      setPoolData(res.data.pools)
-      // give a ltitle delay so when the network is super fast it doesn't feel jarring
+      setTokenData(res.data.tokens)
       setTimeout(() => {
         setAppLoading(false)
       }, 250)
     },
-    [fetchPools, orderBy, orderDirection, setAppLoading]
+    [fetchTokens, orderBy, orderDirection, setAppLoading]
   )
 
   useEffect(() => {
-    fetchPoolsAsync()
-  }, [orderBy, orderDirection, fetchPoolsAsync])
+    fetchTokensAsync()
+  }, [orderBy, orderDirection, fetchTokens, fetchTokensAsync])
 
   const flipSort = (column) => {
     if (column !== orderBy) {
@@ -60,13 +64,13 @@ const Pools = () => {
       <nav className='top-nav'>
         <ul className='pagination'>
           <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
-            <a className='page-link' onClick={() => fetchPoolsAsync(page - 1)}>
+            <a className='page-link' onClick={() => fetchTokensAsync(page - 1)}>
               Previous
             </a>
           </li>
 
-          <li className={`page-item ${!poolData ? 'disabled' : ''}`}>
-            <a className='page-link' onClick={() => fetchPoolsAsync(page + 1)}>
+          <li className={`page-item ${!tokenData ? 'disabled' : ''}`}>
+            <a className='page-link' onClick={() => fetchTokensAsync(page + 1)}>
               Next
             </a>
           </li>
@@ -75,7 +79,7 @@ const Pools = () => {
           <li className='page-item'>
             <a
               className='page-link'
-              onClick={() => fetchPoolsAsync(null, true)}
+              onClick={() => fetchTokensAsync(null, true)}
             >
               Refresh
             </a>
@@ -85,7 +89,9 @@ const Pools = () => {
       <table className='table table-striped table-sm table-hover'>
         <thead className='table-dark'>
           <tr>
-            <th>Trading Pair </th>
+            <th className='token-heading'>Token</th>
+            <th className='price-heading'>Price</th>
+            <th className='price-change-heading'>Price Change (%)</th>
             {getTableHeader(
               'totalValueLockedUSD',
               orderBy,
@@ -93,17 +99,21 @@ const Pools = () => {
               flipSort
             )}
             {getTableHeader('volumeUSD', orderBy, orderDirection, flipSort)}
+            {getTableHeader('txCount', orderBy, orderDirection, flipSort)}
           </tr>
         </thead>
         <tbody>
-          {poolData.map((pool, idx) => {
+          {tokenData.map((token, idx) => {
             return (
               <tr key={idx}>
-                <td>{`${pool.token0.symbol} / ${pool.token1.symbol}`} </td>
+                <td>{`${token.name} (${token.symbol})`} </td>
+                <td>{getPrice(token)}</td>
+                {getPriceChange(token)}
                 <td>
-                  {numberWithCommas(Math.round(pool.totalValueLockedUSD))}
+                  {numberWithCommas(Math.round(token.totalValueLockedUSD))}
                 </td>
-                <td>{numberWithCommas(Math.round(pool.volumeUSD))}</td>
+                <td>{numberWithCommas(Math.round(token.volumeUSD))}</td>
+                <td>{`${numberWithCommas(token.txCount)}`} </td>
               </tr>
             )
           })}
@@ -113,4 +123,4 @@ const Pools = () => {
   )
 }
 
-export default Pools
+export default Tokens

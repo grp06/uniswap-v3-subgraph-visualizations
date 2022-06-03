@@ -7,9 +7,11 @@
     "lint": "eslint \"**/*.{js,jsx}\""
   },
   "dependencies": {
-    "@apollo/client": "^3.6.5",
+    "@apollo/client": "^3.7.0-beta.1",
     "bootstrap": "^5.1.3",
+    "bootstrap-icons": "^1.8.3",
     "graphql": "^16.5.0",
+    "moment": "^2.29.3",
     "next": "latest",
     "react": "17.0.2",
     "react-bootstrap": "^2.4.0",

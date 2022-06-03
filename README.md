@@ -1,6 +1,6 @@
 # Uniswap v3 subgraph visualizations
 
-[live app]: (https://uniswap-v3-subgraph-visualizations-c9molrskl-grp06.vercel.app/pools)
+[Live App](https://uniswap-v3-subgraph-visualizations-c9molrskl-grp06.vercel.app/pools)
 
 This project uses
 

@@ -120,11 +120,11 @@ const Transactions = () => {
                 <td>{moment(timestamp * 1000).fromNow()}</td>
                 <td>$ {numberWithCommas(Math.round(amountUSD))}</td>
                 <td>
-                  {numberWithCommas(Math.round(Math.abs(amount0)))}{' '}
+                  {numberWithCommas(Math.abs(amount0).toFixed(2))}{' '}
                   {token0.symbol}
                 </td>
                 <td>
-                  {numberWithCommas(Math.round(Math.abs(amount1)))}{' '}
+                  {numberWithCommas(Math.abs(amount1).toFixed(2))}{' '}
                   {token1.symbol}
                 </td>
                 <td>
